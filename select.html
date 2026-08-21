@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像選択と調整</title>
+</head>
+<body>
+    <h1>画像を選択してください</h1>
+    
+    <!-- スマホの写真フォルダを開くボタン -->
+    <input type="file" id="imageInput" accept="image/*">
+    <br><br>
+
+    <!-- 画像選択後に現れるエリア（初期状態は非表示） -->
+    <div id="editArea" style="display: none;">
+        <div>
+            <img id="preview" style="max-width: 100%;" alt="選択画像">
+        </div>
+        <br>
+        <div>
+            <label>カーネル調整</label><br>
+            <div style="display: flex; justify-content: space-between; width: 300px;">
+                <span>−（はっきり）</span>
+                <span>（現状）</span>
+                <span>＋（ぼかす）</span>
+            </div>
+            <input type="range" id="kernelRange" min="-5" max="5" value="0" style="width: 300px;">
+        </div>
+        <br>
+    </div>
+
+    <button onclick="location.href='index.html'">トップに戻る</button>
+
+    <script>
+        // 画像を選択して決定した後にエリアを表示するプログラム
+        document.getElementById('imageInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const preview = document.getElementById('preview');
+                    preview.src = event.target.result;
+                    // 画像とスライドバーを表示する
+                    document.getElementById('editArea').style.display = 'block';
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+</html>
