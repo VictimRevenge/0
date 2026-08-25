@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>画像調整アプリ</title>
+    <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'M PLUS Rounded 1c', sans-serif; background-color: white; color: black; }
+        .hidden-screen { display: none !important; }
+        .screen { min-height: 100vh; display: flex; flex-direction: column; }
+    </style>
+</head>
+<body>
+
+    <!-- 1. トップページ -->
+    <div id="page1" class="screen flex flex-col justify-center items-center p-6">
+        <h1 class="text-3xl font-bold mb-10">アプリ名をここ表示（仮）</h1>
+        
+        <!-- 端末の写真フォルダを開く隠し要素 -->
+        <input type="file" id="imageInput" accept="image/*" class="hidden" onchange="handleImageSelect(event)">
+        
+        <button onclick="triggerFileInput()" class="w-64 h-64 bg-red-500 rounded-full shadow-xl flex flex-col items-center justify-center text-white text-4xl font-bold active:scale-95 transition-all">
+            <span>画像を</span>
+            <span>えらぶ</span>
+            <span>ボタン</span>
+        </button>
+    </div>
+
+    <!-- 2. 写真選択ページ -->
+    <div id="page2" class="screen hidden-screen p-4">
+        <div class="flex-1 flex items-center justify-center bg-slate-200 rounded-lg overflow-hidden">
+            <img id="previewImage" class="max-w-full max-h-[60vh] object-contain" alt="プレビュー">
+        </div>
+        <div class="h-20 flex gap-4 pt-4">
+            <button onclick="goToPage3()" class="flex-1 bg-blue-500 rounded-2xl text-white font-bold text-xl">えらぶ</button>
+            <button onclick="goToPage1()" class="flex-1 bg-slate-300 rounded-2xl text-black font-bold text-xl">やめる</button>
+        </div>
+    </div>
+
+    <!-- 3. 調整ページ -->
+    <div id="page3" class="screen hidden-screen">
+        <div class="flex-1 bg-slate-700 flex items-center justify-center">
+            <div class="w-full h-full flex items-center justify-center text-white">画像プレビューエリア</div>
+        </div>
+        <div class="p-6 bg-white rounded-t-3xl shadow-2xl">
+            <div class="flex justify-between items-center text-sm font-bold mb-4">
+                <span class="text-blue-500">−（数字はっきり）</span>
+                <span class="text-slate-500">現状</span>
+                <span class="text-slate-700">＋（数字ぼかす）</span>
+            </div>
+            <input type="range" class="w-full h-4 accent-red-500">
+        </div>
+    </div>
+
+    <!-- 4. 保存ページ（後から追加） -->
+    <div id="page4" class="screen hidden-screen"></div>
+
+    <script>
+        let selectedImageFile = null;
+
+        // ボタンを押したら端末の写真フォルダを開く
+        function triggerFileInput() {
+            document.getElementById('imageInput').click();
+        }
+
+        // 写真が選ばれたらデータを保持して2ページ目に表示する
+        function handleImageSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                selectedImageFile = file;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                    showPage('page2');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function showPage(id) {
+            document.getElementById('page1').classList.add('hidden-screen');
+            document.getElementById('page2').classList.add('hidden-screen');
+            document.getElementById('page3').classList.add('hidden-screen');
+            document.getElementById('page4').classList.add('hidden-screen');
+            document.getElementById(id).classList.remove('hidden-screen');
+        }
+
+        function goToPage1() { 
+            document.getElementById('imageInput').value = '';
+            selectedImageFile = null;
+            showPage('page1'); 
+        }
+        function goToPage2() { showPage('page2'); }
+        function goToPage3() { showPage('page3'); }
+        function goToPage4() { showPage('page4'); }
+    </script>
+</body>
+</html>
